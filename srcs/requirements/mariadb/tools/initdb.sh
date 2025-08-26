@@ -4,7 +4,7 @@ set -e
 # Initialize database
 if [ ! -d "/var/lib/mysql/mysql" ]; then
     echo "Initializing database..."
-    mariadb-install-db --user=mysql --datadir=/var/lib/mysql
+    mariadb_install_db --user=mysql --datadir=/var/lib/mysql
 fi
 
 #star mariadb in the background
@@ -18,11 +18,13 @@ untill mariadb-amin ping --silent; do
 done
 
 
-
-# Kill background mysqld-safe process
-echo "Stopping temporary MySQL server..."
-kill "$pid"
-wait "$pid"
+#create database and user
+mariadb -u root <<-EOSQL
+    CREATE DATABASE IF NOT EXISTS wordpress;
+    CREATE USER IF NOT EXISTS 'wp_user'@'%' IDENTIFIED BY 'wp_pass';
+    GRANT ALL PRIVILEGES ON wordpress.* TO 'wp_user'@'%';
+    FLUSH PRIVILEGES;
+EOSQL
 
 # Start MySQL server
 echo "Starting MySQL server..."
