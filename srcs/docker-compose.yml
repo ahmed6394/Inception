@@ -16,3 +16,7 @@ services:
   nginx:
     build: requirements/nginx
     container_name: nginx
+
+
+  volumes:
+  
