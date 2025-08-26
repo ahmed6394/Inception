@@ -1,0 +1,66 @@
+version: '3.9'
+
+networks:
+  backend_network:
+    driver: bridge
+
+volumes:
+  mariadb_data:
+  wordpress_files:
+
+secrets:
+  db_root_password:
+    file: ./secrets/db_root_password.txt
+  db_user:
+    file: ./secrets/db_user.txt
+  db_password:
+    file: ./secrets/db_password.txt
+
+services:
+  mariadb:
+    build: ./srcs/requirements/mariadb
+    container_name: mariadb
+    networks:
+      - backend_network
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+      MYSQL_USER_FILE: /run/secrets/db_user
+      MYSQL_PASSWORD_FILE: /run/secrets/db_password
+      MYSQL_DATABASE: wordpress
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    secrets:
+      - db_root_password
+      - db_user
+      - db_password
+
+  wordpress:
+    build: ./srcs/requirements/wordpress
+    container_name: wordpress
+    networks:
+      - backend_network
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST: mariadb:3306
+      WORDPRESS_DB_USER_FILE: /run/secrets/db_user
+      WORDPRESS_DB_PASSWORD_FILE: /run/secrets/db_password
+      WORDPRESS_DB_NAME: wordpress
+    volumes:
+      - wordpress_files:/var/www/html
+    depends_on:
+      - mariadb
+
+  nginx:
+    build: ./srcs/requirements/nginx
+    container_name: nginx
+    networks:
+      - backend_network
+    restart: always
+    ports:
+      - "443:443"   # Expose HTTPS only
+    volumes:
+      - wordpress_files:/var/www/html   # Serve WordPress files
+      - ./secrets/certs:/etc/nginx/certs:ro
+    depends_on:
+      - wordpress

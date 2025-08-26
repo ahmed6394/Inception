@@ -18,5 +18,3 @@ services:
     container_name: nginx
 
 
-  volumes:
-  
