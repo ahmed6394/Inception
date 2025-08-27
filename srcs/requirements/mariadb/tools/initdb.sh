@@ -30,6 +30,7 @@ mariadb -u root <<-EOSQL
     CREATE USER IF NOT EXISTS '${DB_USER}'@'%' IDENTIFIED BY '${DB_USER_PASSWORD}';
     GRANT ALL PRIVILEGES ON ${DB_NAME}.* TO '${DB_ADMIN_USER}'@'%';
     GRANT SELECT, INSERT, UPDATE, DELETE ON ${DB_NAME}.* TO '${DB_USER}'@'%';
+    REVOKE ALTER, DROP ON ${DB_NAME}.* FROM '${DB_USER}'@'%';
     FLUSH PRIVILEGES;
 EOSQL
 
@@ -39,4 +40,4 @@ wait "$pid"
 
 # Start MySQL server in foreground
 echo "Starting MySQL server..."
-exec mysqld --user=mysql --bind-address=0.0.0.0
+exec mysqld --bind-address=0.0.0.0

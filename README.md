@@ -108,3 +108,12 @@ Follow in order — check items off as you progress.
 * [ ] Check `.env` variables are used properly
 * [ ] Validate WordPress admin username rule (no `admin/administrator` variants)
 * [ ] Prepare explanation for each service, configuration, and security choice
+
+
+
+### thinks to do letter
+🔹 1. Make initdb.sh idempotent
+
+    Right now, the script always runs user creation on every container start. If you restart the container, MariaDB will complain (users already exist).
+    You can wrap SQL creation in IF NOT EXISTS (you already did for users & DB ✅).
+    That’s fine, but consider also skipping the ALTER USER root... if already set. For now, you can leave it — it won’t  break, just slower startup.
