@@ -1,7 +1,7 @@
 FROM debian:trixie
 
 RUN apt-get update && apt-get upgrade -y \
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    && apt-get install -y \
     mariadb-server mariadb-client && rm -rf /var/lib/apt/lists/*
 
 COPY tools/initdb.sh /usr/local/bin/initdb.sh
