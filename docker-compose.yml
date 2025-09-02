@@ -4,7 +4,18 @@ networks:
 
 services:
 
-
+  nginx:
+    build: srcs/requirements/nginx
+    container_name: nginx
+    ports:
+      - "443:443"
+    volumes:
+      - wp_data:/var/www/html
+    depends_on:
+      - wordpress
+    networks:
+      - backend_network
+    restart: unless-stopped
 
   wordpress:
     build: srcs/requirements/wordpress
@@ -46,6 +57,10 @@ services:
       - DB_NAME=${DB_NAME}
       - DB_ADMIN_USER=${DB_ADMIN_USER}
       - DB_USER=${DB_USER}
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD_FILE=/run/secrets/db_user_password
+      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db_root_password
     secrets:
       - db_root_password
       - db_admin_password
@@ -59,10 +74,6 @@ services:
       retries: 3
       start_period: 40s
 
-
-  # nginx:
-  #   build: requirements/nginx
-  #   container_name: nginx
 
 
 secrets:
