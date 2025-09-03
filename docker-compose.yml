@@ -4,7 +4,17 @@ networks:
 
 services:
 
-
+  nginx:
+    build: srcs/requirements/nginx
+    container_name: nginx
+    depends_on:
+      - wordpress
+    networks:
+      - backend_network
+    ports:
+      - "443:443"
+    volumes:
+      - wp_data:/var/www/html
 
   wordpress:
     build: srcs/requirements/wordpress
@@ -26,8 +36,6 @@ services:
       - WP_ADMIN_EMAIL=${WP_ADMIN_EMAIL}
       - WP_USER=${WP_USER}
       - WP_EMAIL=${WP_EMAIL}
-    ports:
-      - "8080:80"
     secrets:
       - db_admin_password
       - wp_password
@@ -39,7 +47,7 @@ services:
   mariadb:
     build: srcs/requirements/mariadb
     container_name: mariadb
-    restart: always
+    restart: unless-stopped
     networks:
       - backend_network
     environment:
@@ -51,7 +59,7 @@ services:
       - db_admin_password
       - db_user_password
     volumes:
-      - db_data:/var/lib/mysql
+      - ./db_data:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "--silent"]
       interval: 30s
@@ -60,9 +68,7 @@ services:
       start_period: 40s
 
 
-  # nginx:
-  #   build: requirements/nginx
-  #   container_name: nginx
+
 
 
 secrets:
@@ -80,6 +86,4 @@ secrets:
 
 volumes:
   db_data:
-    driver: local
   wp_data:
-    driver: local

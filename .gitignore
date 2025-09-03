@@ -1,3 +1,4 @@
 # Ignore environement files
 .env 
+db_data
 
