@@ -21,7 +21,7 @@ WP_PASSWORD=$(cat /run/secrets/wp_password)
 WP_ADMIN_PASSWORD=$(cat /run/secrets/wp_admin_password)
 
 echo "Waiting for MariaDB to be ready..."
-until mysqladmin ping -h ${DB_HOST} -u ${DB_ADMIN_USER} -p${DB_ADMIN_PASSWORD} --silent; do
+while ! mysqladmin ping -h ${DB_HOST} -u ${DB_ADMIN_USER} -p${DB_ADMIN_PASSWORD} --silent; do
     sleep 3
 done
 
