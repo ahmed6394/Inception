@@ -16,9 +16,9 @@ if [ ! -f "/usr/local/bin/wp" ]; then
 fi
 
 # Read secrets
-DB_ADMIN_PASSWORD=$(cat /run/secrets/db_admin_password)
-WP_PASSWORD=$(cat /run/secrets/wp_password)
-WP_ADMIN_PASSWORD=$(cat /run/secrets/wp_admin_password)
+# DB_ADMIN_PASSWORD=$(cat /run/secrets/db_admin_password)
+# WP_PASSWORD=$(cat /run/secrets/wp_password)
+# WP_ADMIN_PASSWORD=$(cat /run/secrets/wp_admin_password)
 
 echo "Waiting for MariaDB to be ready..."
 while ! mysqladmin ping -h ${DB_HOST} -u ${DB_ADMIN_USER} -p${DB_ADMIN_PASSWORD} --silent; do
@@ -30,14 +30,12 @@ if [ ! -f "wp-config.php" ]; then
     wp core download --allow-root --locale=en_US
     wp config create --allow-root --dbname=${DB_NAME} --dbuser=${DB_ADMIN_USER} --dbpass=${DB_ADMIN_PASSWORD} --dbhost=${DB_HOST}:3306
     wp core install --allow-root --url=${WP_URL} --title=${WP_TITLE} --admin_user=${WP_ADMIN_USER} --admin_password=${WP_ADMIN_PASSWORD} --admin_email=${WP_ADMIN_EMAIL}
-    if ! wp user get "${WP_USER}" --allow-root > /dev/null 2>&1; then
-        wp user create "${WP_USER}" "${WP_EMAIL}" --user_pass="${WP_PASSWORD}" --role=author --allow-root
-    fi
+    wp user create "${WP_USER}" "${WP_EMAIL}" --user_pass="${WP_PASSWORD}" --role=author --allow-root
 else
     echo "Wordpress already configured!"
 fi
 
 chown -R www-data:www-data /var/www/html
 chmod -R 755 /var/www/html
-
+echo "php-fpm start..."
 exec php-fpm8.4 -F -R
