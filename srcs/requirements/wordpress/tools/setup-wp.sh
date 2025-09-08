@@ -15,11 +15,6 @@ if [ ! -f "/usr/local/bin/wp" ]; then
     mv wp-cli.phar /usr/local/bin/wp
 fi
 
-# Read secrets
-# DB_ADMIN_PASSWORD=$(cat /run/secrets/db_admin_password)
-# WP_PASSWORD=$(cat /run/secrets/wp_password)
-# WP_ADMIN_PASSWORD=$(cat /run/secrets/wp_admin_password)
-
 echo "Waiting for MariaDB to be ready..."
 while ! mysqladmin ping -h ${DB_HOST} -u ${DB_ADMIN_USER} -p${DB_ADMIN_PASSWORD} --silent; do
     sleep 3
@@ -36,5 +31,6 @@ fi
 
 chown -R www-data:www-data /var/www/html
 chmod -R 755 /var/www/html
+
 echo "php-fpm start..."
 exec php-fpm8.4 -F -R

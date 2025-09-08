@@ -1,11 +1,6 @@
 #!/bin/bash
 set -e
 
-# Read secrets
-# DB_ROOT_PASSWORD=$(cat /run/secrets/db_root_password)
-# DB_ADMIN_PASSWORD=$(cat /run/secrets/db_admin_password)
-# DB_USER_PASSWORD=$(cat /run/secrets/db_user_password)
-
 # Initialize database
 if [ ! -d "/var/lib/mysql/mysql" ]; then
     echo "Initializing database..."
@@ -13,6 +8,7 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
 
     mariadbd-safe --skip-networking &
     pid="$!"
+    sleep 10
 
     mariadb -u root <<EOF
         ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_ROOT_PASSWORD}';

@@ -3,11 +3,9 @@ FROM debian:trixie
 #install nginx and openssl
 RUN apt-get update && apt-get upgrade -y && apt-get install -y \
     nginx \
-    openssl \
-    && rm -rf /var/lib/apt/lists/*
+    openssl && rm -rf /var/lib/apt/lists/*
 
-
-COPY tools/nginx.conf /etc/nginx/nginx.conf
+COPY nginx.conf /etc/nginx/nginx.conf
 
 # create ssl directory
 RUN mkdir -p /etc/nginx/ssl
