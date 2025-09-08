@@ -22,8 +22,7 @@ fi
 
 echo "Waiting for MariaDB to be ready..."
 while ! mysqladmin ping -h ${DB_HOST} -u ${DB_ADMIN_USER} -p${DB_ADMIN_PASSWORD} --silent; do
-    echo "Waiting for database connection..."
-    sleep 5
+    sleep 3
 done
 
 if [ ! -f "wp-config.php" ]; then
