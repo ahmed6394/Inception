@@ -119,3 +119,21 @@ Follow in order — check items off as you progress.
     That’s fine, but consider also skipping the ALTER USER root... if already set. For now, you can leave it — it won’t  break, just slower startup.
 
   2.write later to configure wp-config.php in wp docker file
+
+
+
+<!-- DB_ROOT_PASSWORD=Gahmed1234
+DB_NAME=wordpress
+DB_ADMIN_USER=wpadmin
+DB_ADMIN_PASSWORD=gahmed1234
+DB_USER=wpuser
+DB_USER_PASSWORD=user1234
+DB_HOST=mariadb
+WP_URL=https://gahmed.42.fr
+WP_TITLE=MyWordPress
+WP_ADMIN_USER=admin
+WP_ADMIN_PASSWORD=ahmed1234
+WP_ADMIN_EMAIL=admin@example.com
+WP_USER=user
+WP_PASSWORD=ahmed123
+WP_EMAIL=user@example.com -->
