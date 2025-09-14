@@ -2,13 +2,12 @@
 
 set -e
 
-# Initialize database
+Initialize database
 if [ ! -d "/var/lib/mysql/mysql" ]; then
     echo "Initializing database..."
     mariadb-install-db --user=mysql --datadir="/var/lib/mysql"
 
     mariadbd-safe --skip-networking &
-    pid="$!"
     sleep 10
 
     mariadb -u root <<EOF
@@ -21,8 +20,10 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
         FLUSH PRIVILEGES;
 EOF
 
-    kill "$pid"
-    wait "$pid"
+    mysqladmin -u root -p${DB_ROOT_PASSWORD} shutdown
+    echo "Database initialized."
+else
+    echo "Database already initialized."
 fi
 
 echo "Starting MariaDB server..."
