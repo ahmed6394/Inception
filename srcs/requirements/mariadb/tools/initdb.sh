@@ -2,7 +2,7 @@
 
 set -e
 
-Initialize database
+#Initialize database
 if [ ! -d "/var/lib/mysql/mysql" ]; then
     echo "Initializing database..."
     mariadb-install-db --user=mysql --datadir="/var/lib/mysql"
